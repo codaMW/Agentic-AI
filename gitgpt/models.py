@@ -25,5 +25,8 @@ class RepoInfo(BaseModel):
     open_issues_count: int | None
 
 
-
+class RepoContent(BaseModel):
+    sha: str | None
+    typ: str | None
+    content: str | None
 

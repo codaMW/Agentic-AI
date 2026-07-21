@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from models import GitHubInfo, RepoInfo
+from models import GitHubInfo, RepoInfo, RepoContent
 from service import GitHubService
 from pydantic_ai import Agent, RunContext
 
@@ -50,9 +50,28 @@ def repo_information(ctx: RunContext[GitHubService], name: str, repo: str) -> Re
 
 
 
+
+@agent.tool
+def repo_content(ctx: RunContext[GitHubService], name: str, repo: str) -> RepoContent:
+
+    """
+    Retrieve a Github repository README.md information
+    Args:
+        name: Github username
+        repo: Github repository name
+    Returns:
+    A RepoContent object that summarizes the repository’s README.md information.
+
+    """
+
+    service = ctx.deps
+
+    return service.get_repo_content(name, repo)
+
+
+
+
 service = GitHubService()
-
-
 history = None
 
 

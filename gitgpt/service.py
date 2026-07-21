@@ -1,5 +1,6 @@
-from models import GitHubInfo, RepoInfo
+from models import GitHubInfo, RepoInfo, RepoContent
 import httpx
+import base64
 
 class GitHubService:
 
@@ -39,5 +40,23 @@ class GitHubService:
                  language=data["language"],
                  has_issues=data["has_issues"],
                  open_issues_count=data["open_issues_count"],
-
                 )
+
+
+
+    def get_repo_content(self, name: str, repo: str) -> RepoContent:
+        BASE_URL = "https://api.github.com"
+        url = f"{BASE_URL}/repos/{name}/{repo}/contents/README.md"
+        response = httpx.get(url, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+
+        content = base64.b64decode(data["content"])
+        decoded_content = content.decode('utf-8')
+
+        return RepoContent (
+                sha=data["sha"],
+                typ=data["type"],
+                content=decoded_content[:10000]
+                )
+
